@@ -191,6 +191,52 @@
     const frame = document.getElementById("appFrame");
     const loading = document.getElementById("loading");
     const error = document.getElementById("error");
+    window.addEventListener("message", function(event) {
+
+  if (
+    !event.data ||
+    event.data.type !== "KTC_NAVIGATE"
+  ) {
+    return;
+  }
+
+  if (
+    event.source !== frame.contentWindow
+  ) {
+    return;
+  }
+
+  const page =
+    String(
+      event.data.page || ""
+    )
+    .trim()
+    .toLowerCase();
+
+  const allowedPages = [
+    "login",
+    "home",
+    "hazard",
+    "hse",
+    "rework"
+  ];
+
+  if (
+    !allowedPages.includes(page)
+  ) {
+    return;
+  }
+
+  const targetUrl =
+    "https://script.google.com/macros/s/AKfycbw1EEbz3YS7xGM0dlTrPcWB94PuLA18_-8aLAIxqsMIdAuwHO9QNDknaJ96AaKk827EuQ/exec" +
+    "?page=" +
+    encodeURIComponent(page);
+
+  loading.classList.remove("hidden");
+
+  frame.src = targetUrl;
+
+});
 
     let loaded = false;
 
