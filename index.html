@@ -191,46 +191,46 @@
     const frame = document.getElementById("appFrame");
     const loading = document.getElementById("loading");
     const error = document.getElementById("error");
-    window.addEventListener("message", function(event) {
+ const APP_URL =
+  "https://script.google.com/macros/s/AKfycbw1EEbz3YS7xGM0dlTrPcWB94PuLA18_-8aLAIxqsMIdAuwHO9QNDknaJ96AaKk827EuQ/exec";
 
-  if (
-    !event.data ||
-    event.data.type !== "KTC_NAVIGATE"
-  ) {
-    return;
-  }
 
-  const page =
-    String(
-      event.data.page || ""
-    )
-    .trim()
-    .toLowerCase();
+const params =
+  new URLSearchParams(
+    window.location.search
+  );
 
-  const allowedPages = [
-    "login",
-    "home",
-    "hazard",
-    "hse",
-    "rework"
-  ];
 
-  if (
-    !allowedPages.includes(page)
-  ) {
-    return;
-  }
+const page =
+  (
+    params.get("page") ||
+    "login"
+  )
+  .trim()
+  .toLowerCase();
 
-  const targetUrl =
-    "https://script.google.com/macros/s/AKfycbw1EEbz3YS7xGM0dlTrPcWB94PuLA18_-8aLAIxqsMIdAuwHO9QNDknaJ96AaKk827EuQ/exec" +
-    "?page=" +
-    encodeURIComponent(page);
 
-  loading.classList.remove("hidden");
+const allowedPages = [
+  "login",
+  "home",
+  "hazard",
+  "hse",
+  "rework"
+];
 
-  frame.src = targetUrl;
 
-});
+const currentPage =
+  allowedPages.includes(page)
+    ? page
+    : "login";
+
+
+frame.src =
+  APP_URL +
+  "?page=" +
+  encodeURIComponent(
+    currentPage
+  );
 
     let loaded = false;
 
