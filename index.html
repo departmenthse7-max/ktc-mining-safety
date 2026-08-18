@@ -1,16 +1,31 @@
 <!doctype html>
 <html lang="id">
+
 <head>
+
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b3d2e">
-  <meta name="description" content="KTC Smart Safety - Mine Safety Platform">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <meta
+    name="theme-color"
+    content="#0b3d2e">
+
+  <meta
+    name="description"
+    content="KTC Smart Safety - Mine Safety Platform">
+
   <title>KTC Smart Safety</title>
 
+
   <style>
+
     * {
       box-sizing: border-box;
     }
+
 
     html,
     body {
@@ -23,6 +38,7 @@
       font-family: Arial, sans-serif;
     }
 
+
     .shell {
       position: fixed;
       inset: 0;
@@ -31,27 +47,36 @@
       background: #ffffff;
     }
 
+
     .loading {
       position: absolute;
       inset: 0;
       z-index: 10;
+
       display: flex;
       align-items: center;
       justify-content: center;
+
       padding: 24px;
+
       background: #ffffff;
-      transition: opacity .25s ease;
+
+      transition:
+        opacity .25s ease;
     }
+
 
     .loading.hidden {
       opacity: 0;
       pointer-events: none;
     }
 
+
     .loading-card {
       width: min(360px, 100%);
       text-align: center;
     }
+
 
     .brand {
       color: #0b3d2e;
@@ -60,21 +85,32 @@
       letter-spacing: .4px;
     }
 
+
     .tagline {
       margin-top: 7px;
       color: #777;
       font-size: 13px;
     }
 
+
     .spinner {
       width: 30px;
       height: 30px;
+
       margin: 24px auto 0;
-      border: 3px solid #e5e5e5;
-      border-top-color: #1565c0;
+
+      border:
+        3px solid #e5e5e5;
+
+      border-top-color:
+        #1565c0;
+
       border-radius: 50%;
-      animation: spin .8s linear infinite;
+
+      animation:
+        spin .8s linear infinite;
     }
+
 
     .loading-text {
       margin-top: 12px;
@@ -82,80 +118,121 @@
       font-size: 12px;
     }
 
+
     .error {
       display: none;
+
       position: absolute;
       inset: 0;
       z-index: 20;
+
       align-items: center;
       justify-content: center;
+
       padding: 24px;
+
       background: #ffffff;
     }
+
 
     .error.show {
       display: flex;
     }
 
+
     .error-card {
       width: min(420px, 100%);
+
       padding: 24px;
+
       text-align: center;
-      border: 1px solid #e0e0e0;
+
+      border:
+        1px solid #e0e0e0;
+
       border-radius: 16px;
-      box-shadow: 0 3px 14px rgba(0,0,0,.08);
+
+      box-shadow:
+        0 3px 14px rgba(0,0,0,.08);
     }
+
 
     .error-title {
       font-size: 18px;
       font-weight: 700;
     }
 
+
     .error-text {
       margin-top: 8px;
+
       color: #666;
+
       font-size: 13px;
       line-height: 1.5;
     }
 
+
     .retry {
       width: 100%;
       min-height: 46px;
+
       margin-top: 18px;
+
       border: 0;
       border-radius: 9px;
+
       background: #1565c0;
+
       color: #fff;
+
       font-size: 15px;
       font-weight: 700;
+
       cursor: pointer;
     }
 
+
     iframe {
       display: block;
+
       width: 100%;
       height: 100%;
+
       border: 0;
+
       background: #ffffff;
     }
 
+
     @keyframes spin {
+
       to {
-        transform: rotate(360deg);
+        transform:
+          rotate(360deg);
       }
+
     }
 
+
     @media (min-width: 700px) {
+
       .loading-card {
         width: 420px;
       }
+
     }
+
   </style>
+
 </head>
+
 
 <body>
 
+
   <main class="shell">
+
 
     <section
       id="loading"
@@ -163,10 +240,24 @@
       aria-label="Memuat KTC Smart Safety">
 
       <div class="loading-card">
-        <div class="brand">KTC SMART SAFETY</div>
-        <div class="tagline">Mine Safety Platform</div>
-        <div class="spinner" aria-hidden="true"></div>
-        <div class="loading-text">Membuka aplikasi...</div>
+
+        <div class="brand">
+          KTC SMART SAFETY
+        </div>
+
+        <div class="tagline">
+          Mine Safety Platform
+        </div>
+
+        <div
+          class="spinner"
+          aria-hidden="true">
+        </div>
+
+        <div class="loading-text">
+          Membuka aplikasi...
+        </div>
+
       </div>
 
     </section>
@@ -191,7 +282,7 @@
         <button
           class="retry"
           type="button"
-          onclick="reloadApp()">
+          onclick="loadApp()">
 
           COBA LAGI
 
@@ -209,174 +300,239 @@
       referrerpolicy="strict-origin-when-cross-origin">
     </iframe>
 
+
   </main>
 
 
   <script>
 
+
+    // ========================================================
+    // APPS SCRIPT
+    // ========================================================
+
     const APP_URL =
       "https://script.google.com/macros/s/AKfycbw1EEbz3YS7xGM0dlTrPcWB94PuLA18_-8aLAIxqsMIdAuwHO9QNDknaJ96AaKk827EuQ/exec";
 
 
+    // ========================================================
+    // ELEMENTS
+    // ========================================================
+
     const frame =
-      document.getElementById("appFrame");
-
-    const loading =
-      document.getElementById("loading");
-
-    const error =
-      document.getElementById("error");
-
-
-    const params =
-      new URLSearchParams(
-        window.location.search
+      document.getElementById(
+        "appFrame"
       );
 
 
-    const requestedPage =
-      (
-        params.get("page") ||
-        "login"
-      )
-      .trim()
-      .toLowerCase();
+    const loading =
+      document.getElementById(
+        "loading"
+      );
 
+
+    const error =
+      document.getElementById(
+        "error"
+      );
+
+
+    // ========================================================
+    // ALLOWED PAGES
+    // ========================================================
 
     const allowedPages = [
+
       "login",
+
       "home",
+
       "hazard",
+
       "hse",
-      "rework"
+
+      "rework",
+
+      "inspeksi"
+
     ];
 
 
-    const currentPage =
-      allowedPages.includes(
-        requestedPage
-      )
-      ? requestedPage
-      : "login";
+    // ========================================================
+    // GET PAGE
+    // ========================================================
+
+    function getCurrentPage() {
+
+      const params =
+        new URLSearchParams(
+          window.location.search
+        );
 
 
-    /*
-     * Hanya parameter yang memang diperlukan
-     * yang diteruskan ke Apps Script.
-     *
-     * logout=1 sengaja diteruskan supaya
-     * reglogin.html dapat membersihkan state
-     * setelah logout.
-     */
-
-    const appParams =
-      new URLSearchParams();
-
-    appParams.set(
-      "page",
-      currentPage
-    );
+      const requestedPage =
+        (
+          params.get("page") ||
+          "login"
+        )
+        .trim()
+        .toLowerCase();
 
 
-    if (
-      params.get("logout") === "1"
-    ) {
+      if (
+        allowedPages.includes(
+          requestedPage
+        )
+      ) {
 
-      appParams.set(
-        "logout",
-        "1"
+        return requestedPage;
+
+      }
+
+
+      return "login";
+
+    }
+
+
+    // ========================================================
+    // BUILD APP URL
+    // ========================================================
+
+    function buildAppUrl() {
+
+      const page =
+        getCurrentPage();
+
+
+      const params =
+        new URLSearchParams();
+
+
+      params.set(
+        "page",
+        page
+      );
+
+
+      const logout =
+        new URLSearchParams(
+          window.location.search
+        )
+        .get(
+          "logout"
+        );
+
+
+      if (
+        logout === "1"
+      ) {
+
+        params.set(
+          "logout",
+          "1"
+        );
+
+      }
+
+
+      /*
+       * Cache buster.
+       *
+       * Setiap kali GitHub membuka halaman,
+       * Apps Script mendapatkan URL baru.
+       */
+
+      params.set(
+        "_ts",
+        Date.now().toString()
+      );
+
+
+      return (
+        APP_URL +
+        "?" +
+        params.toString()
       );
 
     }
 
 
-    const targetUrl =
-      APP_URL +
-      "?" +
-      appParams.toString();
+    // ========================================================
+    // LOAD APP
+    // ========================================================
+
+    function loadApp() {
+
+      error.classList.remove(
+        "show"
+      );
 
 
-    frame.src =
-      targetUrl;
+      loading.classList.remove(
+        "hidden"
+      );
 
 
-    let loaded = false;
+      frame.src =
+        buildAppUrl();
 
+    }
+
+
+    // ========================================================
+    // IFRAME LOADED
+    // ========================================================
 
     frame.addEventListener(
       "load",
-      function () {
-
-        loaded = true;
+      function() {
 
         setTimeout(
-          function () {
+          function() {
 
             loading.classList.add(
               "hidden"
             );
 
           },
-          250
+          200
         );
 
       }
     );
 
 
+    // ========================================================
+    // IFRAME ERROR
+    // ========================================================
+
     frame.addEventListener(
       "error",
-      function () {
-
-        error.classList.add(
-          "show"
-        );
+      function() {
 
         loading.classList.add(
           "hidden"
         );
 
+        error.classList.add(
+          "show"
+        );
+
       }
     );
 
 
-    function reloadApp() {
+    // ========================================================
+    // INITIAL LOAD
+    // ========================================================
 
-      error.classList.remove(
-        "show"
-      );
+    loadApp();
 
-      loading.classList.remove(
-        "hidden"
-      );
-
-      loaded = false;
-
-      frame.src =
-        targetUrl +
-        "&reload=" +
-        Date.now();
-
-    }
-
-
-    /*
-     * Jangan tampilkan error otomatis
-     * hanya karena iframe lambat.
-     */
-
-    setTimeout(
-      function () {
-
-        if (!loaded) {
-          // Biarkan iframe terus mencoba.
-        }
-
-      },
-      12000
-    );
 
   </script>
 
+
 </body>
+
 </html>
