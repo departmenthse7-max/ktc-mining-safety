@@ -200,12 +200,6 @@
     return;
   }
 
-  if (
-    event.source !== frame.contentWindow
-  ) {
-    return;
-  }
-
   const page =
     String(
       event.data.page || ""
