@@ -154,113 +154,229 @@
 </head>
 
 <body>
+
   <main class="shell">
 
-    <section id="loading" class="loading" aria-label="Memuat KTC Smart Safety">
+    <section
+      id="loading"
+      class="loading"
+      aria-label="Memuat KTC Smart Safety">
+
       <div class="loading-card">
         <div class="brand">KTC SMART SAFETY</div>
         <div class="tagline">Mine Safety Platform</div>
         <div class="spinner" aria-hidden="true"></div>
         <div class="loading-text">Membuka aplikasi...</div>
       </div>
+
     </section>
 
-    <section id="error" class="error" aria-live="polite">
+
+    <section
+      id="error"
+      class="error"
+      aria-live="polite">
+
       <div class="error-card">
-        <div class="error-title">KTC Smart Safety</div>
-        <div class="error-text">
-          Aplikasi belum dapat dimuat. Periksa koneksi internet lalu coba lagi.
+
+        <div class="error-title">
+          KTC Smart Safety
         </div>
-        <button class="retry" type="button" onclick="reloadApp()">
+
+        <div class="error-text">
+          Aplikasi belum dapat dimuat.
+          Periksa koneksi internet lalu coba lagi.
+        </div>
+
+        <button
+          class="retry"
+          type="button"
+          onclick="reloadApp()">
+
           COBA LAGI
+
         </button>
+
       </div>
+
     </section>
+
 
     <iframe
       id="appFrame"
       title="KTC Smart Safety"
-      src="https://script.google.com/macros/s/AKfycbw1EEbz3YS7xGM0dlTrPcWB94PuLA18_-8aLAIxqsMIdAuwHO9QNDknaJ96AaKk827EuQ/exec"
       allow="camera; microphone"
       referrerpolicy="strict-origin-when-cross-origin">
     </iframe>
 
   </main>
 
+
   <script>
-    const frame = document.getElementById("appFrame");
-    const loading = document.getElementById("loading");
-    const error = document.getElementById("error");
- const APP_URL =
-  "https://script.google.com/macros/s/AKfycbw1EEbz3YS7xGM0dlTrPcWB94PuLA18_-8aLAIxqsMIdAuwHO9QNDknaJ96AaKk827EuQ/exec";
+
+    const APP_URL =
+      "https://script.google.com/macros/s/AKfycbw1EEbz3YS7xGM0dlTrPcWB94PuLA18_-8aLAIxqsMIdAuwHO9QNDknaJ96AaKk827EuQ/exec";
 
 
-const params =
-  new URLSearchParams(
-    window.location.search
-  );
+    const frame =
+      document.getElementById("appFrame");
+
+    const loading =
+      document.getElementById("loading");
+
+    const error =
+      document.getElementById("error");
 
 
-const page =
-  (
-    params.get("page") ||
-    "login"
-  )
-  .trim()
-  .toLowerCase();
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
 
 
-const allowedPages = [
-  "login",
-  "home",
-  "hazard",
-  "hse",
-  "rework"
-];
+    const requestedPage =
+      (
+        params.get("page") ||
+        "login"
+      )
+      .trim()
+      .toLowerCase();
 
 
-const currentPage =
-  allowedPages.includes(page)
-    ? page
-    : "login";
+    const allowedPages = [
+      "login",
+      "home",
+      "hazard",
+      "hse",
+      "rework"
+    ];
 
 
-frame.src =
-  APP_URL +
-  "?page=" +
-  encodeURIComponent(
-    currentPage
-  );
+    const currentPage =
+      allowedPages.includes(
+        requestedPage
+      )
+      ? requestedPage
+      : "login";
+
+
+    /*
+     * Hanya parameter yang memang diperlukan
+     * yang diteruskan ke Apps Script.
+     *
+     * logout=1 sengaja diteruskan supaya
+     * reglogin.html dapat membersihkan state
+     * setelah logout.
+     */
+
+    const appParams =
+      new URLSearchParams();
+
+    appParams.set(
+      "page",
+      currentPage
+    );
+
+
+    if (
+      params.get("logout") === "1"
+    ) {
+
+      appParams.set(
+        "logout",
+        "1"
+      );
+
+    }
+
+
+    const targetUrl =
+      APP_URL +
+      "?" +
+      appParams.toString();
+
+
+    frame.src =
+      targetUrl;
+
 
     let loaded = false;
 
-    frame.addEventListener("load", function () {
-      loaded = true;
 
-      setTimeout(function () {
-        loading.classList.add("hidden");
-      }, 250);
-    });
+    frame.addEventListener(
+      "load",
+      function () {
 
-    frame.addEventListener("error", function () {
-      error.classList.add("show");
-      loading.classList.add("hidden");
-    });
+        loaded = true;
+
+        setTimeout(
+          function () {
+
+            loading.classList.add(
+              "hidden"
+            );
+
+          },
+          250
+        );
+
+      }
+    );
+
+
+    frame.addEventListener(
+      "error",
+      function () {
+
+        error.classList.add(
+          "show"
+        );
+
+        loading.classList.add(
+          "hidden"
+        );
+
+      }
+    );
+
 
     function reloadApp() {
-      error.classList.remove("show");
-      loading.classList.remove("hidden");
-      frame.src = frame.src.split("#")[0] + "#reload=" + Date.now();
+
+      error.classList.remove(
+        "show"
+      );
+
+      loading.classList.remove(
+        "hidden"
+      );
+
+      loaded = false;
+
+      frame.src =
+        targetUrl +
+        "&reload=" +
+        Date.now();
+
     }
 
-    // Fallback apabila browser tidak memicu error event pada iframe.
-    setTimeout(function () {
-      if (!loaded) {
-        // Tetap biarkan iframe mencoba memuat.
-        // Tidak menampilkan error otomatis agar koneksi lambat
-        // tidak dianggap sebagai kegagalan.
-      }
-    }, 12000);
+
+    /*
+     * Jangan tampilkan error otomatis
+     * hanya karena iframe lambat.
+     */
+
+    setTimeout(
+      function () {
+
+        if (!loaded) {
+          // Biarkan iframe terus mencoba.
+        }
+
+      },
+      12000
+    );
+
   </script>
+
 </body>
 </html>
