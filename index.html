@@ -533,7 +533,116 @@
 
 
   </script>
-
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KTC Smart Safety Dashboard</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--text:#18212b;--muted:#6b7280;--line:#e5e7eb;--p:#0f766e}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{background:#fff;border-bottom:1px solid var(--line);padding:16px 24px;position:sticky;top:0;z-index:5}
+.head{max-width:1400px;margin:auto;display:flex;justify-content:space-between;align-items:center}.head h1{margin:0;font-size:21px}.head p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.status{font-size:12px;font-weight:bold;color:#15803d}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#15803d;margin-right:6px}
+main{max-width:1400px;margin:auto;padding:24px}.toolbar{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:18px}
+select,input,button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:10px 12px;font-size:13px}
+button{background:var(--p);color:#fff;border-color:var(--p);font-weight:bold;cursor:pointer}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:0 4px 16px #0000000b}
+.label{font-size:11px;color:var(--muted);font-weight:bold;text-transform:uppercase}.value{font-size:30px;font-weight:800;margin-top:7px}.note{font-size:11px;color:var(--muted);margin-top:4px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}.title{margin:0 0 15px;font-size:16px}
+.bar{margin:11px 0}.barhead{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}.track{height:10px;background:#edf0f2;border-radius:20px;overflow:hidden}.fill{height:100%;background:var(--p);border-radius:20px}
+.trend{height:170px;display:flex;align-items:flex-end;gap:9px;border-bottom:1px solid var(--line);padding:10px 3px 0}.ti{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px}.tb{width:65%;max-width:55px;background:var(--p);border-radius:5px 5px 0 0;min-height:3px}.tl{font-size:9px;color:var(--muted);text-align:center}.tv{font-size:11px;font-weight:bold}
+.wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:850px}th,td{padding:11px 9px;border-bottom:1px solid var(--line);font-size:12px;text-align:left}th{background:#f8fafc;font-size:10px;color:#475569;text-transform:uppercase}
+.badge{padding:4px 8px;border-radius:99px;font-size:10px;font-weight:bold;background:#dcfce7;color:#166534}.open{background:#fee2e2;color:#991b1b}.med{background:#fef3c7;color:#92400e}
+.empty{text-align:center;color:var(--muted);padding:28px}.error{display:none;background:#fef2f2;color:#991b1b;border:1px solid #fecaca;padding:12px;border-radius:8px;margin-bottom:18px;font-size:13px}
+.modal{display:none;position:fixed;inset:0;background:#0f172a88;z-index:20;padding:25px;overflow:auto}.box{background:#fff;max-width:850px;margin:25px auto;padding:22px;border-radius:14px}.mh{display:flex;justify-content:space-between}.close{background:#fff;color:#374151}.details{display:grid;grid-template-columns:1fr 1fr;gap:10px}.di{background:#f8fafc;padding:10px;border-radius:8px;font-size:13px}.di small{display:block;color:var(--muted);font-size:10px;font-weight:bold;text-transform:uppercase;margin-bottom:5px}.full{grid-column:1/-1}
+@media(max-width:900px){.cards{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}}@media(max-width:600px){main{padding:14px}.cards{gap:9px}.card{padding:13px}.value{font-size:24px}.details{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<header><div class="head"><div><h1>KTC Smart Safety Dashboard</h1><p>Safety Performance & Hazard Monitoring</p></div><div class="status"><span class="dot"></span><span id="api">Connecting...</span></div></div></header>
+<main id="main">
+<div class="toolbar">
+<select id="dept"><option value="">Semua Department</option></select>
+<select id="stat"><option value="">Semua Status</option><option>OPEN</option><option>CLOSED</option></select>
+<select id="prio"><option value="">Semua Prioritas</option></select>
+<input id="search" placeholder="Cari hazard, nama, lokasi...">
+<button onclick="load()">↻ Refresh</button>
+</div>
+<div id="error" class="error"></div>
+<div class="cards">
+<div class="card"><div class="label">Total Hazard</div><div class="value" id="total">-</div><div class="note">Seluruh laporan</div></div>
+<div class="card"><div class="label">Open</div><div class="value" id="open">-</div><div class="note">Belum closed</div></div>
+<div class="card"><div class="label">Closed</div><div class="value" id="closed">-</div><div class="note">Sudah ditutup</div></div>
+<div class="card"><div class="label">Closure Rate</div><div class="value" id="rate">-</div><div class="note">Persentase penyelesaian</div></div>
+</div>
+<div class="grid">
+<div class="card"><h2 class="title">Hazard by Department</h2><div id="departments"></div></div>
+<div class="card"><h2 class="title">Hazard by Category</h2><div id="categories"></div></div>
+</div>
+<div class="card" style="margin-bottom:18px"><h2 class="title">Trend Hazard</h2><div id="trend" class="trend"></div></div>
+<div class="card"><h2 class="title">Hazard Register</h2><div class="wrap"><table><thead><tr><th>Hazard ID</th><th>Timestamp</th><th>Nama</th><th>Department</th><th>Lokasi</th><th>Kategori</th><th>Prioritas</th><th>Status</th><th></th></tr></thead><tbody id="rows"><tr><td colspan="9" class="empty">Memuat data...</td></tr></tbody></table></div></div>
+<p style="text-align:center;color:#6b7280;font-size:11px">KTC Smart Safety • Dashboard API v1.0</p>
+</main>
+<div id="modal" class="modal"><div class="box"><div class="mh"><div><h2 id="mt" style="margin:0"></h2><p id="ms" style="color:#6b7280;font-size:12px"></p></div><button class="close" onclick="closeModal()">×</button></div><div id="details" class="details"></div></div></div>
+<script>
+const API="https://script.google.com/macros/s/AKfycbypwM7admL3Sjk1TKjid7DQeY_W_YbcjSZ2iSN9-IaN8fsdcyTvuvIKQxmtWCaYa6wnzQ/exec";
+let data={},hazards=[],current=[];
+const $=id=>document.getElementById(id), s=v=>v==null?"":String(v).trim(), esc=v=>s(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+async function load(){
+ $("error").style.display="none";
+ try{
+  const r=await fetch(API+"?action=dashboard",{cache:"no-store"}); if(!r.ok)throw Error("HTTP "+r.status);
+  data=await r.json(); if(!data.ok)throw Error(data.message||"API error");
+  hazards=Array.isArray(data.hazards)?data.hazards:[]; $("api").textContent="API Connected"; filters(); render();
+ }catch(e){$("api").textContent="API Error";$("error").textContent="Gagal mengambil data: "+e.message;$("error").style.display="block"}
+}
+function filters(){
+ let ds=[...new Set(hazards.map(x=>s(x.department)).filter(Boolean))].sort();
+ let ps=[...new Set(hazards.map(x=>s(x.prioritas||x.priority)).filter(Boolean))].sort();
+ let d=$("dept"),p=$("prio"),dv=d.value,pv=p.value;
+ d.innerHTML='<option value="">Semua Department</option>'+ds.map(x=>`<option>${esc(x)}</option>`).join("");
+ p.innerHTML='<option value="">Semua Prioritas</option>'+ps.map(x=>`<option>${esc(x)}</option>`).join("");
+ d.value=dv;p.value=pv;
+}
+function filtered(){
+ let d=$("dept").value.toLowerCase(),st=$("stat").value.toLowerCase(),p=$("prio").value.toLowerCase(),q=$("search").value.toLowerCase();
+ return hazards.filter(x=>{
+  let hay=[x.hazard_id,x.nama,x.department,x.lokasi,x.detail_lokasi,x.kategori,x.prioritas,x.detail_hazard,x.status].map(s).join(" ").toLowerCase();
+  return (!d||s(x.department).toLowerCase()==d)&&(!st||s(x.status).toLowerCase()==st)&&(!p||s(x.prioritas||x.priority).toLowerCase()==p)&&(!q||hay.includes(q));
+ });
+}
+function counts(list,key){let o={};list.forEach(x=>{let k=s(x[key])||"Tidak diisi";o[k]=(o[k]||0)+1});return Object.entries(o).sort((a,b)=>b[1]-a[1])}
+function bars(id,list){if(!list.length){$(id).innerHTML='<div class="empty">Tidak ada data</div>';return}let m=Math.max(...list.map(x=>x[1]));$(id).innerHTML=list.map(x=>`<div class="bar"><div class="barhead"><span>${esc(x[0])}</span><b>${x[1]}</b></div><div class="track"><div class="fill" style="width:${Math.max(3,x[1]/m*100)}%"></div></div></div>`).join("")}
+function render(){
+ current=filtered();let t=current.length,o=current.filter(x=>s(x.status).toUpperCase()=="OPEN").length,c=t-o;
+ $("total").textContent=t;$("open").textContent=o;$("closed").textContent=c;$("rate").textContent=t?Math.round(c/t*100)+"%":"0%";
+ bars("departments",counts(current,"department"));bars("categories",counts(current,"kategori"));trend(current);table(current);
+}
+function trend(list){
+ let src=Array.isArray(data.trend)?data.trend:[];if(!src.length){$("trend").innerHTML='<div class="empty">Tidak ada data trend</div>';return}
+ let m=Math.max(1,...src.map(x=>Number(x.count||0)));
+ $("trend").innerHTML=src.slice(-10).map(x=>`<div class="ti"><div class="tv">${x.count||0}</div><div class="tb" style="height:${Math.max(3,(x.count||0)/m*130)}px"></div><div class="tl">${esc(x.period||x.date||"")}</div></div>`).join("");
+}
+function table(list){
+ if(!list.length){$("rows").innerHTML='<tr><td colspan="9" class="empty">Tidak ada hazard sesuai filter.</td></tr>';return}
+ $("rows").innerHTML=list.map((x,i)=>{let p=s(x.prioritas||x.priority),st=s(x.status).toUpperCase();return `<tr><td><b>${esc(x.hazard_id)}</b></td><td>${esc(x.timestamp)}</td><td>${esc(x.nama)}</td><td>${esc(x.department)}</td><td>${esc(x.lokasi)}</td><td>${esc(x.kategori)}</td><td><span class="badge ${p.includes("P2")||p.toLowerCase().includes("medium")?"med":""}">${esc(p||"-")}</span></td><td><span class="badge ${st=="OPEN"?"open":""}">${esc(st||"-")}</span></td><td><button onclick="detail(${i})">Detail</button></td></tr>`}).join("");
+}
+function detail(i){
+ let x=current[i];$("mt").textContent=s(x.hazard_id)||"Hazard Detail";$("ms").textContent=s(x.nama)+" • "+s(x.department)+" • "+s(x.timestamp);
+ let fs=[["Nama",x.nama],["NIK",x.nik],["Department",x.department],["Department Terlapor",x.department_terlapor],["Lokasi",x.lokasi],["Detail Lokasi",x.detail_lokasi],["Kategori",x.kategori],["Prioritas",x.prioritas],["Status",x.status],["Detail Hazard",x.detail_hazard],["Tindakan",x.tindakan],["Tindakan Perbaikan",x.tindakan_perbaikan],["Review HSE",x.hse_review_by],["Review Date",x.hse_review_date],["Review Result",x.review_result],["Tindak Lanjut",x.tindak_lanjut],["Status Tindak Lanjut",x.status_tindak_lanjut]];
+ $("details").innerHTML=fs.filter(x=>s(x[1])).map(x=>`<div class="di ${x[0].includes("Detail")||x[0].includes("Tindakan")||x[0]=="Tindak Lanjut"?"full":""}"><small>${esc(x[0])}</small>${esc(x[1])}</div>`).join("");
+ $("modal").style.display="block";
+}
+function closeModal(){$("modal").style.display="none"}
+["dept","stat","prio","search"].forEach(id=>$(id).addEventListener(id=="search"?"input":"change",render));
+$("modal").addEventListener("click",e=>{if(e.target.id=="modal")closeModal()});
+load();
+</script>
+</body>
+</html>
 
 </body>
 
