@@ -314,7 +314,9 @@
     const APP_URL =
       "https://script.google.com/macros/s/AKfycbw1EEbz3YS7xGM0dlTrPcWB94PuLA18_-8aLAIxqsMIdAuwHO9QNDknaJ96AaKk827EuQ/exec";
 
-
+    const DASHBOARD_URL =
+      "https://script.google.com/macros/s/AKfycbypwM7admL3Sjk1TKjid7DQeY_W_YbcjSZ2iSN9-IaN8fsdcyTvuvIKQxmtWCaYa6wnzQ/exec";
+    
     // ========================================================
     // ELEMENTS
     // ========================================================
@@ -344,18 +346,13 @@
     const allowedPages = [
 
       "login",
-
       "home",
-
       "hazard",
-
       "hse",
-
       "rework",
-      
       "tindaklanjut",
-
-      "inspeksi"
+      "inspeksi",
+      "dashboard"
 
     ];
 
@@ -401,65 +398,75 @@
     // BUILD APP URL
     // ========================================================
 
-    function buildAppUrl() {
+function buildAppUrl() {
 
-      const page =
-        getCurrentPage();
+  const page =
+    getCurrentPage();
 
+  /*
+   * DASHBOARD adalah aplikasi Google Apps Script
+   * yang terpisah dari Safety App.
+   */
 
-      const params =
-        new URLSearchParams();
+  if (page === "dashboard") {
 
+    return (
+      DASHBOARD_URL +
+      "?_ts=" +
+      Date.now().toString()
+    );
 
-      params.set(
-        "page",
-        page
-      );
-
-
-      const logout =
-        new URLSearchParams(
-          window.location.search
-        )
-        .get(
-          "logout"
-        );
+  }
 
 
-      if (
-        logout === "1"
-      ) {
+  /*
+   * Semua page Safety App tetap menggunakan
+   * Apps Script Safety App yang lama.
+   */
 
-        params.set(
-          "logout",
-          "1"
-        );
+  const params =
+    new URLSearchParams();
 
-      }
-
-
-      /*
-       * Cache buster.
-       *
-       * Setiap kali GitHub membuka halaman,
-       * Apps Script mendapatkan URL baru.
-       */
-
-      params.set(
-        "_ts",
-        Date.now().toString()
-      );
+  params.set(
+    "page",
+    page
+  );
 
 
-      return (
-        APP_URL +
-        "?" +
-        params.toString()
-      );
+  const logout =
+    new URLSearchParams(
+      window.location.search
+    )
+    .get(
+      "logout"
+    );
 
-    }
+
+  if (
+    logout === "1"
+  ) {
+
+    params.set(
+      "logout",
+      "1"
+    );
+
+  }
 
 
+  params.set(
+    "_ts",
+    Date.now().toString()
+  );
+
+
+  return (
+    APP_URL +
+    "?" +
+    params.toString()
+  );
+
+}
     // ========================================================
     // LOAD APP
     // ========================================================
