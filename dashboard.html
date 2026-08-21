@@ -29,7 +29,6 @@ body{
 }
 
 header{
-  <a href="?page=home" class="back-button">← MENU UTAMA</a>
   background:#fff;
   border-bottom:1px solid var(--line);
   padding:16px 24px;
@@ -483,22 +482,23 @@ footer{
     margin:10px auto;
     padding:15px;
   }
+  .back-button{
+    display:inline-flex;
+    align-items:center;
+    padding:8px 14px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:600;
+    margin-bottom:12px;
 }
+}
+  
 </style>
 </head>
 
 <body>
-
 <header>
-  .back-button {
-  display: inline-flex;
-  align-items: center;
-  padding: 8px 14px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
+    <a href="?page=home" class="back-button">← MENU UTAMA</a>
   <div class="head">
     <div>
       <h1>KTC Smart Safety Dashboard</h1>
