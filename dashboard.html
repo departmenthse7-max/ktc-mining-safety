@@ -511,6 +511,62 @@ footer{
     font-size:16px;
     font-weight:800;
 }
+  .print-btn{
+  border:1px solid #d1d5db;
+  background:#fff;
+  color:#111827;
+  border-radius:7px;
+  padding:7px 11px;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.print-btn:hover{
+  background:#f3f4f6;
+}
+
+@media print{
+
+  body > *{
+    display:none !important;
+  }
+
+  #modal{
+    display:block !important;
+    position:static !important;
+    background:#fff !important;
+    padding:0 !important;
+  }
+
+  #modal .box{
+    position:static !important;
+    width:100% !important;
+    max-width:none !important;
+    max-height:none !important;
+    overflow:visible !important;
+    box-shadow:none !important;
+    border:none !important;
+  }
+
+  #modal .mh{
+    border-bottom:1px solid #999;
+    margin-bottom:15px;
+  }
+
+  #modal .close,
+  #modal .print-btn{
+    display:none !important;
+  }
+
+  #details{
+    overflow:visible !important;
+  }
+
+  @page{
+    size:A4;
+    margin:12mm;
+  }
 }
   
 </style>
@@ -716,27 +772,48 @@ footer{
 
   <div class="box">
 
-    <div class="mh">
+   <div class="mh">
 
-      <div>
-        <h2 id="mt" style="margin:0">
-          Hazard Detail
-        </h2>
+  <div>
+    <h2 id="mt" style="margin:0">
+      Hazard Detail
+    </h2>
 
-        <p
-          id="ms"
-          style="color:#6b7280;font-size:12px;margin:5px 0 0"
-        ></p>
-      </div>
+    <p
+      id="ms"
+      style="color:#6b7280;font-size:12px;margin:5px 0 0"
+    ></p>
+  </div>
 
-      <button
-        class="close"
-        onclick="closeModal()"
-      >
-        ×
-      </button>
+  <div style="display:flex;align-items:center;gap:8px">
 
-    </div>
+    <button
+      class="print-btn"
+      onclick="printHazardReport()"
+      title="Print Hazard Report"
+    >
+      🖨 PRINT
+    </button>
+
+    <button
+      class="close"
+      onclick="closeModal()"
+    >
+      function printHazardReport(){
+
+  if(!printHazard){
+    return;
+  }
+
+  window.print();
+
+}
+      ×
+    </button>
+
+  </div>
+
+</div>
 
     <div id="details"></div>
 
@@ -752,7 +829,7 @@ const API =
 let data = {};
 let hazards = [];
 let current = [];
-
+let printHazard = null;
 
 /* =====================================================
    HELPER
@@ -1777,7 +1854,7 @@ function detail(index){
   if(!x){
     return;
   }
-
+    printHazard = x;
   const status =
     normalizeStatus(
       x.status
