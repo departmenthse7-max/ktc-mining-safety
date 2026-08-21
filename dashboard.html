@@ -511,45 +511,6 @@ footer{
     font-size:16px;
     font-weight:800;
 }
-
-  body > *{
-    display:none !important;
-  }
-
-  #modal{
-    display:block !important;
-    position:static !important;
-    background:#fff !important;
-    padding:0 !important;
-  }
-
-  #modal .box{
-    position:static !important;
-    width:100% !important;
-    max-width:none !important;
-    max-height:none !important;
-    overflow:visible !important;
-    box-shadow:none !important;
-    border:none !important;
-  }
-
-  #modal .mh{
-    border-bottom:1px solid #999;
-    margin-bottom:15px;
-  }
-
-  #modal .close,
- 
-  }
-
-  #details{
-    overflow:visible !important;
-  }
-
-  @page{
-    size:A4;
-    margin:12mm;
-  }
 }
   
 </style>
@@ -755,31 +716,27 @@ footer{
 
   <div class="box">
 
-   <div class="mh">
+    <div class="mh">
 
-  <div>
-    <h2 id="mt" style="margin:0">
-      Hazard Detail
-    </h2>
+      <div>
+        <h2 id="mt" style="margin:0">
+          Hazard Detail
+        </h2>
 
-    <p
-      id="ms"
-      style="color:#6b7280;font-size:12px;margin:5px 0 0"
-    ></p>
-  </div>
+        <p
+          id="ms"
+          style="color:#6b7280;font-size:12px;margin:5px 0 0"
+        ></p>
+      </div>
 
-  <div style="display:flex;align-items:center;gap:8px">
+      <button
+        class="close"
+        onclick="closeModal()"
+      >
+        ×
+      </button>
 
-    <button
-      class="close"
-      onclick="closeModal()"
-    >
-   ×
-    </button>
-
-  </div>
-
-</div>
+    </div>
 
     <div id="details"></div>
 
@@ -790,11 +747,12 @@ footer{
 <script>
 
 const API =
-https://script.google.com/macros/s/AKfycbypwM7admL3Sjk1TKjid7DQeY_W_YbcjSZ2iSN9-IaN8fsdcyTvuvIKQxmtWCaYa6wnzQ/exec;
+  "https://script.google.com/macros/s/AKfycbypwM7admL3Sjk1TKjid7DQeY_W_YbcjSZ2iSN9-IaN8fsdcyTvuvIKQxmtWCaYa6wnzQ/exec";
 
 let data = {};
 let hazards = [];
 let current = [];
+
 
 /* =====================================================
    HELPER
@@ -804,11 +762,13 @@ function $(id){
   return document.getElementById(id);
 }
 
+
 function text(value){
   return value == null
     ? ""
     : String(value).trim();
 }
+
 
 function esc(value){
   return text(value).replace(
@@ -1817,7 +1777,10 @@ function detail(index){
   if(!x){
     return;
   }
-    
+
+  const status =
+    normalizeStatus(
+      x.status
     );
 
   const priority =
@@ -2123,6 +2086,15 @@ function detail(index){
 /* =====================================================
    CLOSE MODAL
 ===================================================== */
+
+function closeModal(){
+
+  $("modal").style.display =
+    "none";
+
+}
+
+
 /* =====================================================
    EVENTS
 ===================================================== */
