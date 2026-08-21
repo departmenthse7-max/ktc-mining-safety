@@ -799,16 +799,8 @@ footer{
       class="close"
       onclick="closeModal()"
     >
-      function printHazardReport(){
-
-  if(!printHazard){
-    return;
-  }
-
-  window.print();
-
 }
-      ×
+  
     </button>
 
   </div>
@@ -2168,9 +2160,16 @@ function closeModal(){
 
   $("modal").style.display =
     "none";
+}
+function printHazardReport(){
+
+  if(!printHazard){
+    return;
+  }
+
+  window.print();
 
 }
-
 
 /* =====================================================
    EVENTS
