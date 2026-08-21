@@ -564,7 +564,7 @@ footer{
 .modal .print{
     position:absolute;
     top:20px;
-    right:40px;
+    right:50px;
     z-index:10;
     margin:0;
 }
@@ -587,14 +587,13 @@ footer{
         margin: 10mm;
     }
 
-    /* Sembunyikan seluruh dashboard */
+    /* Hilangkan layout dashboard sepenuhnya */
     body.printing > * {
-        visibility: hidden !important;
+        display: none !important;
     }
 
-    /* Hanya modal hazard yang dicetak */
+    /* Tampilkan hanya modal */
     body.printing #modal {
-        visibility: visible !important;
         display: block !important;
         position: absolute !important;
         left: 0 !important;
@@ -607,21 +606,17 @@ footer{
         overflow: visible !important;
     }
 
-    body.printing #modal * {
-        visibility: visible !important;
-    }
-
-    /* Kotak laporan */
     body.printing #modal .box {
+        display: block !important;
         position: relative !important;
         width: 100% !important;
         max-width: none !important;
-        max-height: none !important;
         height: auto !important;
+        max-height: none !important;
         margin: 0 !important;
         padding: 0 !important;
-        box-shadow: none !important;
         border: none !important;
+        box-shadow: none !important;
         overflow: visible !important;
     }
 
@@ -631,15 +626,15 @@ footer{
         display: none !important;
     }
 
-    /* Jangan ada page break */
+    /* Cegah pemisahan laporan */
     body.printing #modal,
     body.printing #modal .box,
     body.printing #modal #details {
-        break-before: auto !important;
-        break-after: auto !important;
+        break-before: avoid !important;
+        break-after: avoid !important;
         break-inside: avoid !important;
-        page-break-before: auto !important;
-        page-break-after: auto !important;
+        page-break-before: avoid !important;
+        page-break-after: avoid !important;
         page-break-inside: avoid !important;
     }
 }
