@@ -804,13 +804,11 @@ function $(id){
   return document.getElementById(id);
 }
 
-
 function text(value){
   return value == null
     ? ""
     : String(value).trim();
 }
-
 
 function esc(value){
   return text(value).replace(
