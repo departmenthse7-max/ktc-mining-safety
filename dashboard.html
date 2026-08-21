@@ -576,7 +576,73 @@ footer{
     z-index:10;
     margin:0;
 }
+/* =========================================
+   PRINT HAZARD REPORT - 1 LEMBAR
+   ========================================= */
 
+@media print {
+
+    @page {
+        size: A4 portrait;
+        margin: 10mm;
+    }
+
+    /* Sembunyikan seluruh dashboard */
+    body.printing > * {
+        visibility: hidden !important;
+    }
+
+    /* Hanya modal hazard yang dicetak */
+    body.printing #modal {
+        visibility: visible !important;
+        display: block !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        overflow: visible !important;
+    }
+
+    body.printing #modal * {
+        visibility: visible !important;
+    }
+
+    /* Kotak laporan */
+    body.printing #modal .box {
+        position: relative !important;
+        width: 100% !important;
+        max-width: none !important;
+        max-height: none !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        overflow: visible !important;
+    }
+
+    /* Jangan cetak tombol */
+    body.printing #modal .print,
+    body.printing #modal .close {
+        display: none !important;
+    }
+
+    /* Jangan ada page break */
+    body.printing #modal,
+    body.printing #modal .box,
+    body.printing #modal #details {
+        break-before: auto !important;
+        break-after: auto !important;
+        break-inside: avoid !important;
+        page-break-before: auto !important;
+        page-break-after: auto !important;
+        page-break-inside: avoid !important;
+    }
+}
 </style>
 </head>
 
@@ -2163,13 +2229,13 @@ function closeModal(){
 
 function printHazardReport(){
 
-    const modal = $("modal");
-
-    if(!modal){
-        return;
-    }
+    document.body.classList.add("printing");
 
     window.print();
+
+    window.onafterprint = function(){
+        document.body.classList.remove("printing");
+    };
 }
 
 /* =====================================================
