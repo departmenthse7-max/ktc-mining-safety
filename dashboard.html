@@ -485,11 +485,31 @@ footer{
   .back-button{
     display:inline-flex;
     align-items:center;
-    padding:8px 14px;
+    gap:8px;
+    padding:9px 16px 9px 10px;
+    margin-bottom:14px;
+    background:#fff;
+    color:#1f2937;
+    border:1px solid #d1d5db;
     border-radius:8px;
     text-decoration:none;
-    font-weight:600;
-    margin-bottom:12px;
+    font-size:14px;
+    font-weight:700;
+    line-height:1;
+    box-shadow:0 1px 2px rgba(0,0,0,.08);
+}
+
+.back-icon{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:24px;
+    height:24px;
+    border-radius:6px;
+    background:#1f2937;
+    color:#fff;
+    font-size:16px;
+    font-weight:800;
 }
 }
   
@@ -498,7 +518,14 @@ footer{
 
 <body>
 <header>
-    <a href="?page=home" class="back-button">← MENU UTAMA</a>
+  <a
+  class="back-button"
+  href="https://departmenthse7-max.github.io/ktc-mining-safety/?page=home"
+  target="_top">
+  <span class="back-icon">←</span>
+  <span>KEMBALI KE MENU UTAMA</span>
+</a>
+  
   <div class="head">
     <div>
       <h1>KTC Smart Safety Dashboard</h1>
