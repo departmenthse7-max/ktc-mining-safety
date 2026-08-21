@@ -511,22 +511,6 @@ footer{
     font-size:16px;
     font-weight:800;
 }
-  .print-btn{
-  border:1px solid #d1d5db;
-  background:#fff;
-  color:#111827;
-  border-radius:7px;
-  padding:7px 11px;
-  font-size:12px;
-  font-weight:700;
-  cursor:pointer;
-}
-
-.print-btn:hover{
-  background:#f3f4f6;
-}
-
-@media print{
 
   body > *{
     display:none !important;
@@ -555,8 +539,7 @@ footer{
   }
 
   #modal .close,
-  #modal .print-btn{
-    display:none !important;
+ 
   }
 
   #details{
@@ -788,14 +771,6 @@ footer{
   <div style="display:flex;align-items:center;gap:8px">
 
     <button
-      class="print-btn"
-      onclick="printHazardReport()"
-      title="Print Hazard Report"
-    >
-      🖨 PRINT
-    </button>
-
-    <button
       class="close"
       onclick="closeModal()"
     >
@@ -820,7 +795,6 @@ https://script.google.com/macros/s/AKfycbypwM7admL3Sjk1TKjid7DQeY_W_YbcjSZ2iSN9-
 let data = {};
 let hazards = [];
 let current = [];
-let printHazard = null;
 
 /* =====================================================
    HELPER
@@ -1845,10 +1819,7 @@ function detail(index){
   if(!x){
     return;
   }
-    printHazard = x;
-  const status =
-    normalizeStatus(
-      x.status
+    
     );
 
   const priority =
@@ -2154,21 +2125,6 @@ function detail(index){
 /* =====================================================
    CLOSE MODAL
 ===================================================== */
-
-function closeModal(){
-
-  $("modal").style.display =
-    "none";
-  } 
-function printHazardReport(){
-
-  if(!printHazard){
-    return;
-  }
-
-  window.print();
-
-}
 /* =====================================================
    EVENTS
 ===================================================== */
