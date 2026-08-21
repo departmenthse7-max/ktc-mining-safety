@@ -799,7 +799,6 @@ footer{
       class="close"
       onclick="closeModal()"
     >
-}
    ×
     </button>
 
@@ -2167,7 +2166,126 @@ function printHazardReport(){
     return;
   }
 
-  window.print();
+  const content =
+    document.getElementById("details").innerHTML;
+
+  const title =
+    document.getElementById("mt").innerText;
+
+  const subtitle =
+    document.getElementById("ms").innerText;
+
+  const win =
+    window.open("", "_blank");
+
+  win.document.write(`
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>${title}</title>
+
+<style>
+
+@page{
+  size:A4;
+  margin:10mm;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Arial,sans-serif;
+  color:#111;
+  background:#fff;
+  margin:0;
+  font-size:11px;
+}
+
+.print-header{
+  border-bottom:2px solid #111;
+  padding-bottom:8px;
+  margin-bottom:10px;
+}
+
+.print-title{
+  font-size:20px;
+  font-weight:800;
+  margin-bottom:3px;
+}
+
+.print-subtitle{
+  font-size:11px;
+  color:#555;
+}
+
+.print-content{
+  width:100%;
+}
+
+.print-content *{
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+
+@media print{
+
+  html,
+  body{
+    width:210mm;
+    min-height:297mm;
+  }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="print-header">
+
+  <div class="print-title">
+    KTC SMART SAFETY
+  </div>
+
+  <div style="font-size:14px;font-weight:700;margin-top:4px">
+    HAZARD REPORT
+  </div>
+
+  <div class="print-subtitle">
+    ${title}
+  </div>
+
+  <div class="print-subtitle">
+    ${subtitle}
+  </div>
+
+</div>
+
+<div class="print-content">
+
+  ${content}
+
+</div>
+
+</body>
+</html>
+  `);
+
+  win.document.close();
+
+  win.focus();
+
+  setTimeout(function(){
+
+    win.print();
+
+  },500);
 
 }
 
