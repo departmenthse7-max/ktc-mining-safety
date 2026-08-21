@@ -372,7 +372,13 @@ th{
 .print:hover{
     background:#0b5f59;
 }
-
+.modal-actions{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:8px;
+    margin-left:auto;
+}
 .detail-section{
   margin-top:18px;
 }
@@ -528,7 +534,30 @@ footer{
     font-weight:800;
 }
 }
-  
+<style>
+
+    /* CSS yang sudah ada */
+    ...
+
+    .close{
+        background:#fff;
+        color:#374151;
+        border-color:var(--line);
+        font-size:20px;
+        line-height:1;
+        padding:8px 12px;
+    }
+
+    /* TAMBAHKAN CSS BARU DI SINI */
+    .print,
+    .close{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+    }
+
+    ...
+
 </style>
 </head>
 
@@ -744,30 +773,23 @@ footer{
           style="color:#6b7280;font-size:12px;margin:5px 0 0"
         ></p>
       </div>
-
-      <button
-        class="close"
-        onclick="closeModal()"
-      >
-        ×
-      </button>
       <button
         class="print"
          onclick="printHazardReport()"
           >
           🖨 PRINT
       </button>
-      
+      <button
+        class="close"
+        onclick="closeModal()"
+      >
+        ×
+      </button>
     </div>
-
     <div id="details"></div>
-
   </div>
-
 </div>
-
 <script>
-
 const API =
   "https://script.google.com/macros/s/AKfycbypwM7admL3Sjk1TKjid7DQeY_W_YbcjSZ2iSN9-IaN8fsdcyTvuvIKQxmtWCaYa6wnzQ/exec";
 
